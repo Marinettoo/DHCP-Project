@@ -75,11 +75,64 @@ end
 - In this snippet, the server receives two interfaces: the first one on the host-only network ```192.168.56.0/24``` (static IP ```192.168.56.10```) and the second on the internal network ```192.168.57.0/24``` (IP ```192.168.57.10```, where it will listen for DHCP). The clients ```c1``` and ```c2``` connect to the same internal network using DHCP (type: "dhcp"), so they will get their IP addresses from the server.
 
 ### 2.Configure the DHCP server
-Once the vagrant file is created and the three machines have booted up, we will enter the server machine writting the command: ```vagrant ssh server``` we will check the 3 interfaces with ```ip a ``` command. We will see something like this:
+Once the vagrant file is created and the three machines have booted up, we will enter the 'server' machine writting the command: ```vagrant ssh server``` we will check the 3 interfaces with ```ip a ``` command. We will see something like this:
 
 - ```enp0s3```: Vagrant NAT - for internet
 - ```enp0s8```: Host-only: it communicate with the admin
 - ```enp0s9```: Internal isolated DHCP Network
+
+*The interface name might change*
+
+#### 1- Install the DHCP service
+We will type:
+```shell
+sudo apt update
+sudo apt install -y isc-dhcp-server
+```
+After that, we will edit ```/etc/default/isc-dhcp-server``` And we modify ```INTERFACESv4="[*The interface name*]"``` in a way that the DHCP demon, listen in the network ```192.168.57.0/24```
+
+#### 2- Configure directions range:
+We make a security copy of the principal configuration file:
+``` bash
+sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bak
+sudo nano /etc/dhcp/dhcpd.conf
+```
+We add a subnet section just like the next one:
+
+```shell
+subnet 192.168.57.0 netmask 255.255.255.0 {
+range 192.168.57.25 192.168.57.50;
+option broadcast-address 192.168.57.255;
+option routers 192.168.57.10;
+option domain-name-servers 8.8.8.8, 4.4.4.4;
+default-lease-time 86400; # 1 día
+max-lease-time 691200; # 8 días
+option domain-name "micasa.es";
+}
+```
+We reboot the service:
+```shell
+sudo systemctl restart isc-dhcp-server
+```
+#### 3- Keeping a fixed IP address for c2
+In the same ```/etc/dhcp/dhcpd.conf``` We will add at the end a host entry, with C2 mask (we can obtain it by typing ```ip a``` in the C2 VM)
+
+
+```shell
+host c2 {
+hardware ethernet 08:00:27:ae:79:7c; # This is my personal MAC address
+fixed-address 192.168.57.4;
+default-lease-time 3600; # 1 hora
+option domain-name-servers 1.1.1.1;
+}
+```
+Once this is done, our server will be ready. It will assign dinamic IPs in the .25-.50 range to every new client and will assign .4 only to C2.
+
+### 3.Configure the clients and verify
+Now we will configure c1 and c2 for obtaining an IP adrees by DHCP in the network
+
+
+
 
 
 
