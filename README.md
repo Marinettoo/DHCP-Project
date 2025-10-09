@@ -6,7 +6,7 @@ This repository is dedicated for DHCP practice 1 in the Network Services and Int
 This project explains how to set up and configure a **DHCP server** using **Vagrant** and **VirtualBox** with **Ubuntu** machine.
 It include one server and two clients (one with a dynamic IP and one with a reserverd IP), all connected via internal private networks.
 
-## Requisitos Previos
+## Prerequisites
 
 We ensure that these programs are installed:
 
