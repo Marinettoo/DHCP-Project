@@ -15,14 +15,60 @@ We ensure that these programs are installed:
 
 ---
 
-## Project Structure
+## How to guide
+### 1.Prepare the Vagrantfile and the virtual machines
+We will open our terminal and write the following commands:
+```shell
+cd ~/DHCP-Project
+vagrant init ubuntu/focal64
+```
+This will generate an initial ```Vagrantfile``` with Ubuntu OS. We will edit this file for adding three machines (**server**, **c1** and **c2**) with it networks. This is our final fle content:
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
 
-DHCP
-- Vagrantfile
-- provisioning
-  - setup-server.sh
-  - setup-client.sh
-- dhcp-conf
-  - dhcpd.conf
-- README.md
+  # DHCP Server machine
+  config.vm.define "server" do |server|
+    server.vm.hostname = "server"
 
+    # – First interface: host-only network (192.168.56.0/24)
+    server.vm.network "private_network", ip: "192.168.56.10" # Host-only
+
+    # – Second interface: internal network (192.168.57.0/24) for DHCP
+    server.vm.network "private_network", ip: "192.168.57.10",
+      virtualbox__intnet: "intnet" # Internal network
+
+    server.vm.provision "shell", inline: <<-SHELL
+      # Here you can include provisioning commands for the server
+      echo "Provisioning server..."
+    SHELL
+  end
+
+  # Client c1 (Dynamic IP from DHCP in the internal network)
+  config.vm.define "c1" do |c1|
+    c1.vm.hostname = "c1"
+
+    # Connected only to the internal network via DHCP
+    c1.vm.network "private_network", type: "dhcp",
+      virtualbox__intnet: "intnet"
+
+    c1.vm.provision "shell", inline: <<-SHELL
+      echo "Provisioning c1..."
+    SHELL
+  end
+
+  # Client c2 (Static IP via DHCP by MAC address)
+  config.vm.define "c2" do |c2|
+    c2.vm.hostname = "c2"
+
+    # Also connected to the internal network via DHCP
+    c2.vm.network "private_network", type: "dhcp",
+      virtualbox__intnet: "intnet"
+
+    c2.vm.provision "shell", inline: <<-SHELL
+      echo "Provisioning c2..."
+    SHELL
+  end
+end
+
+```
