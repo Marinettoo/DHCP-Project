@@ -17,13 +17,12 @@ We ensure that these programs are installed:
 
 ## Project Structure
 
-| Folder / File       | Description |
-|--------------------------|-------------|
-| `Vagrantfile`            | Main configuration file for launching virtual machines with Vagrant. |
-| `provisioning/`          | Contains automated configuration scripts. |
-| `setup-server.sh`        | Script to configure the DHCP server. |
-| `setup-client.sh`        | Script to configure the DHCP client. |
-| `dhcp-conf/`             | Contains the configuration files for the DHCP service.. |
-| `dhcpd.conf`             | Main configuration file for the DHCP daemon. |
-| `README.md`              | Project Documentation. |
+DHCP
+- Vagrantfile
+- provisioning
+  - setup-server.sh
+  - setup-client.sh
+- dhcp-conf
+  - dhcpd.conf
+- README.md
 
