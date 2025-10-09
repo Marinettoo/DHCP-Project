@@ -129,7 +129,18 @@ option domain-name-servers 1.1.1.1;
 Once this is done, our server will be ready. It will assign dinamic IPs in the .25-.50 range to every new client and will assign .4 only to C2.
 
 ### 3.Configure the clients and verify
-Now we will configure c1 and c2 for obtaining an IP adrees by DHCP in the network
+Now we will configure c1 and c2 for obtaining an IP adrees by DHCP in the network:
+
+#### C1 Client
+We enter to C1 Client and we type ```sudo dhclient```. After that, ```ip a``` must show that c1 has an IP in 192.168.57.25-50. 
+
+#### C2 Client
+As same as C1 client, we type ```sudo dhclient``` and it should obtain the IP 192.168.57.4. We check with ```ip a```.
+
+Finally, we can revise in the server the DHCP leases file:
+```sudo cat /var/lib/dhcp/dhcpd.leases```
+
+
 
 
 
