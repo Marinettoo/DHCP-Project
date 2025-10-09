@@ -72,3 +72,8 @@ Vagrant.configure("2") do |config|
 end
 
 ```
+- In this snippet, the server receives two interfaces: the first one on the host-only network ```192.168.56.0/24``` (static IP ```192.168.56.10```) and the second on the internal network ```192.168.57.0/24``` (IP ```192.168.57.10```, where it will listen for DHCP). The clients ```c1``` and ```c2``` connect to the same internal network using DHCP (type: "dhcp"), so they will get their IP addresses from the server.
+
+### 2.Configure the DHCP server
+Once the vagrant file is created and
+
