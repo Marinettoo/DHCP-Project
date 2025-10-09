@@ -31,20 +31,19 @@ Vagrant.configure("2") do |config|
   config.vm.define "server" do |server|
     server.vm.hostname = "server"
 
-    # – First interface: host-only network (192.168.56.0/24)
+    #host-only network (192.168.56.0/24)
     server.vm.network "private_network", ip: "192.168.56.10" # Host-only
 
-    # – Second interface: internal network (192.168.57.0/24) for DHCP
+    #internal network (192.168.57.0/24) for DHCP
     server.vm.network "private_network", ip: "192.168.57.10",
       virtualbox__intnet: "intnet" # Internal network
 
     server.vm.provision "shell", inline: <<-SHELL
-      # Here you can include provisioning commands for the server
       echo "Provisioning server..."
     SHELL
   end
 
-  # Client c1 (Dynamic IP from DHCP in the internal network)
+  # Client c1 
   config.vm.define "c1" do |c1|
     c1.vm.hostname = "c1"
 
@@ -57,7 +56,7 @@ Vagrant.configure("2") do |config|
     SHELL
   end
 
-  # Client c2 (Static IP via DHCP by MAC address)
+  # Client c2 
   config.vm.define "c2" do |c2|
     c2.vm.hostname = "c2"
 
