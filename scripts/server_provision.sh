@@ -2,7 +2,7 @@
 # Stop execution if any command fails
 set -e
 
-echo "🛠 Installing DHCP server..."
+echo "Installing DHCP server..."
 apt update -y
 apt install -y isc-dhcp-server net-tools iproute2
 
