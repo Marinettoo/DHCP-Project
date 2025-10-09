@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
     server.vm.network "private_network", ip: "192.168.57.10",
       virtualbox__intnet: "intnet" # Internal network
 
-    server.vm.provision "shell", inline: <<-SHELL
+    server.vm.provision "shell", path: "scripts/server_provision.sh"
       echo "Provisioning server..."
     SHELL
   end
@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
     c1.vm.network "private_network", type: "dhcp",
       virtualbox__intnet: "intnet"
 
-    c1.vm.provision "shell", inline: <<-SHELL
+    c1.vm.provision "shell", path: "scripts/client_provision.sh"
       echo "Provisioning c1..."
     SHELL
   end
@@ -64,7 +64,7 @@ Vagrant.configure("2") do |config|
     c2.vm.network "private_network", type: "dhcp",
       virtualbox__intnet: "intnet"
 
-    c2.vm.provision "shell", inline: <<-SHELL
+    c2.vm.provision "shell", path: "scripts/client_provision.sh"
       echo "Provisioning c2..."
     SHELL
   end
