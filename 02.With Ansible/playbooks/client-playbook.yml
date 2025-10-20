@@ -1,0 +1,13 @@
+---
+- name: Configurar clientes DHCP
+  hosts: clients
+  become: true
+  tasks:
+    - name: Instalar cliente DHCP y herramientas
+      apt:
+        name: isc-dhcp-client,net-tools,iproute2
+        state: present
+        update_cache: yes
+
+    - name: Solicitar IP al servidor DHCP
+      command: dhclient -v

@@ -1,0 +1,30 @@
+---
+- name: Configurar el servidor DHCP
+  hosts: server
+  become: true
+  tasks:
+    - name: Instalar DHCP y herramientas de red
+      apt:
+        name: isc-dhcp-server,net-tools,iproute2
+        state: present
+        update_cache: yes
+
+    - name: Configurar interfaz del DHCP (192.168.57.x)
+      lineinfile:
+        path: /etc/default/isc-dhcp-server
+        regexp: '^INTERFACESv4='
+        line: 'INTERFACESv4="eth2"'  # comprobar con ip a
+
+    - name: Copiar configuración dhcpd.conf
+      copy:
+        src: files/dhcpd.conf
+        dest: /etc/dhcp/dhcpd.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reiniciar el servicio DHCP
+      service:
+        name: isc-dhcp-server
+        state: restarted
+        enabled: yes
